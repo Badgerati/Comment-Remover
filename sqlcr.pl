@@ -17,21 +17,27 @@ walk_dir($ARGV[0]);
 
 sub walk_dir {
 	my ($dir) = @_;
-	my $current_dir = undef;
-	opendir DIR, $dir or die "Can't open directory: $!";
-	
-	while (my $file = readdir(DIR)) {
-		$current_dir = "$dir/$file";
 
-		if ((-f $current_dir) && ($file =~ m/\.sql$/)) {
-			remove_comments($current_dir);
-		}
-		elsif ((-d $current_dir) && !($file =~ m/^\./)) {
-			walk_dir($current_dir);
-		}
+	if ((-f $dir) && ($dir =~ m/\.sql$/)) {
+		remove_comments($dir);
 	}
+	else {
+		my $current_dir = undef;
+		opendir DIR, $dir or die "Can't open directory: $!";
+		
+		while (my $file = readdir(DIR)) {
+			$current_dir = "$dir/$file";
 
-	closedir(DIR);
+			if ((-f $current_dir) && ($file =~ m/\.sql$/)) {
+				remove_comments($current_dir);
+			}
+			elsif ((-d $current_dir) && !($file =~ m/^\./)) {
+				walk_dir($current_dir);
+			}
+		}
+
+		closedir(DIR);
+	}
 }
 
 sub remove_comments {

@@ -20,8 +20,13 @@ To run SQLCR, use:
 perl sqlcr.pl C:\path\to\sql\files
 ```
 
-SQLCR will strip down all SQL files within the given directory and all sub-directories.
-(Support for individual files will come soon).
+or
+
+```shell
+perl sqlcr.pl C:\path\to\file.sql
+```
+
+SQLCR will strip down all SQL files within the given directory and all sub-directories, or from a single SQL file if a literal file is passed.
 
 
 Example
