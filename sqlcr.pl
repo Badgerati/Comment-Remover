@@ -4,14 +4,32 @@
 # License:	MIT
 # Date:		25/09/2015
 
+use Switch;
 use Term::ANSIColor qw(:constants);
 
-if (($#ARGV + 1) != 1)
-{
-	print RED, "Usage: sqlcr.pl sql_directory\n", RESET;
+# Check arguments supplied
+my $argc = $#ARGV + 1;
+if ($argc == 0 || $argc > 2) {
+	print RED, "Usage: sqlcr.pl sql_directory [TSQL|MySql]\n", RESET;
 	exit;
 }
 
+my $sql_type = "TSQL";
+if ($argc == 2) {
+	$sql_type = uc $ARGV[1];
+}
+
+my $com_regex = undef;
+switch ($sql_type) {
+	case "TSQL"		{ $com_regex = qr/(\/\*.*?\*\/|--.*?$)/sm; }
+	case "MYSQL"	{ $com_regex = qr/(\/\*[^!].*?\*\/|--\s.*?$|#.*?$)/sm; }
+	else {
+		print RED, "Usage: sqlcr.pl sql_directory [TSQL|MySql]\n", RESET;
+		exit;
+	}
+}
+
+# Set encoding, and walk through folders removing comments
 my $encoding = ":encoding(UTF-8)";
 walk_dir($ARGV[0]);
 
@@ -49,7 +67,7 @@ sub remove_comments {
 	close $handle or die "$handle: $!";
 
 	$joined_lines = join('', @lines);
-	$joined_lines =~ s/(\/\*.*?\*\/|--.*?$)//sgm;
+	$joined_lines =~ s/$com_regex//g;
 
 	open ($handle, "> $encoding", $file) || die "$0: can't open $file for writing: $!";
 	print $handle $joined_lines;
