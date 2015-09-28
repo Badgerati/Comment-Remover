@@ -1,39 +1,26 @@
-SQL Comment Remover
+Comment Remover
 ===================
-SQLCR is a Perl script which will remove all comments from a given SQL file. Useful for if you need to remove sensitive data from comments, or to save some extra bytes.
+Comment Remover is a Perl script which will remove all comments from a given file or files in directories. Useful for if you need to remove sensitive data from comments, or to save some extra bytes.
 
-SQLCR currently supports TSQL and MySQL comments.
+Comment Remover currently supports the following comments for these languages:
 
-Comments of the following are supported for both TSQL and MySQL:
+* TSQL
+* MySQL
+* C#
+* Java
 
-* /* ... */
-* -- ...
-
-For MySQL, the additional comment style is also supported:
-
-* # ...
-* <*! ... *> are not removed, and kept in place
-
-The comments removed can be anywhere within the file.
+The comments removed can be anywhere within the file. Please note, that if it detects a "comment" within a string value, this will be removed.
 
 
 Usage
 =====
-To run SQLCR, use:
+To run Comment Remover, use:
 
 ```shell
-perl sqlcr.pl C:\path\to\sql\files [TSQL|MySQL]
+perl cremove.pl [directory|file] [comment type]
 ```
 
-or
-
-```shell
-perl sqlcr.pl C:\path\to\file.sql [TSQL|MySQL]
-```
-
-SQLCR will strip down all SQL files within the given directory and all sub-directories, or from a single SQL file if a literal file is passed.
-
-If the optional TSQL/MySQL flag is not supplied, it is default to TSQL.
+Comment Remover will strip down all files within the given directory and all sub-directories, or from a single file if a literal file is passed.
 
 
 Example
@@ -70,10 +57,10 @@ END
 Running the following shell command:
 
 ```shell
-perl sqlcr.pl C:\path\to\directory
+perl cremove.pl C:\path\to\directory TSQL
 ```
 
-Will remove all comments from all SQL files within the directory and sub-directories. Meaning the above will be stripped down to:
+Will remove all comments from all SQL files within the directory and sub-directories using the TSQL comment format. Meaning the above will be stripped down to:
 
 ```sql
 
